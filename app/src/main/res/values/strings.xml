@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">ToDoApp</string>
+    <string name="action_settings">Settings</string>
+    <string name="pick_time">Time Due</string>
+    <string name="pick_date">Date Due</string>
+</resources>
+
