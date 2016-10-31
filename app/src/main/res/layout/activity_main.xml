@@ -8,13 +8,6 @@
     android:fitsSystemWindows="true"
     tools:context="com.meowisthetime.todoapp.MainActivity">
 
-    <Spinner
-        android:id="@+id/category_dropdown"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:layout_margin="15dp">
-    </Spinner>
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

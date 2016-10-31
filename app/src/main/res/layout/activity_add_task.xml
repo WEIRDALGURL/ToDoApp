@@ -39,13 +39,13 @@
         android:textIsSelectable="true"
         />
 
-    <EditText
-        android:id="@+id/category_name"
+    <Spinner
+        android:id="@+id/category_dropdown"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Category"
         android:layout_below="@+id/time_due"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        />
 
     <ImageView
         android:id="@+id/thumbnail1"

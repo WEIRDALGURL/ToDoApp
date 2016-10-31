@@ -9,17 +9,22 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -29,15 +34,18 @@ import java.util.Locale;
 
 public class AddTasksActivity extends AppCompatActivity {
     private EditText taskName;
-    private EditText taskCategory;
     private EditText dueDate;
     private EditText dueTime;
     private Button loadImage;
     private EditText comments;
+    private ImageView imageView;
     private int index;
+    private int CategoryID;
+    private Spinner categoryDropdown;
     Calendar myCalendar = Calendar.getInstance();
     private static int RESULT_LOAD_IMG = 1;
-    String imgDecodableString;
+    private  String imgDecodableString;
+    private String selectedPhoto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,11 +53,22 @@ public class AddTasksActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_task);
 
         taskName = (EditText) findViewById(R.id.task_name);
-        taskCategory = (EditText) findViewById(R.id.category_name);
         dueDate = (EditText) findViewById(R.id.date_due);
         dueTime = (EditText) findViewById(R.id.time_due);
         comments = (EditText) findViewById(R.id.commentBox);
         loadImage = (Button) findViewById(R.id.buttonLoadPicture);
+        categoryDropdown = (Spinner) findViewById(R.id.category_dropdown);
+        imageView = (ImageView) findViewById(R.id.thumbnail1);
+
+        ArrayList<String> categories = new ArrayList<>();
+        categories.add("Home");
+        categories.add("Work");
+        categories.add("Misc");
+
+        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, categories);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        categoryDropdown.setAdapter(adapter);
 
         Intent intent = getIntent();
         index = intent.getIntExtra(MainActivity.TASK_INDEX, -1);
@@ -58,6 +77,7 @@ public class AddTasksActivity extends AppCompatActivity {
         dueDate.setText(intent.getStringExtra(MainActivity.TASK_DUE));
         dueTime.setText(intent.getStringExtra(MainActivity.TASK_TIME_DUE));
         comments.setText(intent.getStringExtra(MainActivity.TASK_TEXT));
+        selectedPhoto = intent.getStringExtra("SelectedPhoto");
 
 
         final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
@@ -139,6 +159,20 @@ public class AddTasksActivity extends AppCompatActivity {
         int id = item.getItemId();
         //noinspection SimplifiableIfStatement
         if (id == R.id.submit_btn) {
+            switch(categoryDropdown.getSelectedItem().toString()){
+                case "Home":
+                    CategoryID = 0;
+                    break;
+                case "Work":
+                    CategoryID = 1;
+                    break;
+                case "Misc":
+                    CategoryID = 2;
+                    break;
+                default:
+                    Toast.makeText(AddTasksActivity.this, "There was an error setting categoryID, please try again.", Toast.LENGTH_LONG).show();
+                    break;
+            }
 
             Intent intent = getIntent();
             intent.putExtra(MainActivity.TASK_INDEX, index);
@@ -146,26 +180,11 @@ public class AddTasksActivity extends AppCompatActivity {
             intent.putExtra(MainActivity.TASK_DUE, dueDate.getText().toString());
             intent.putExtra(MainActivity.TASK_TIME_DUE, dueTime.getText().toString());
             intent.putExtra(MainActivity.TASK_TEXT, comments.getText().toString());
-            intent.putExtra(MainActivity.TASK_CATEGORY, taskCategory.getText().toString());
+            intent.putExtra(MainActivity.TASK_CATEGORY, categoryDropdown.getSelectedItem().toString());
+            intent.putExtra(MainActivity.TASK_CATEGORYID, CategoryID);
+
             setResult(RESULT_OK, intent);
             finish();
-
-//            Intent intent = new Intent(AddTasksActivity.this, MainActivity.class);
-//            intent.putExtra(MainActivity.TASK_NAME, taskName.getText().toString());
-//            intent.putExtra(MainActivity.TASK_CATEGORY, taskCategory.getText().toString());
-////            intent.putExtra("Category", taskCategory.getText().toString());
-////            //I gotta figure out how to get the date here
-////            intent.putExtra("Due Date", myCalendar.getTime());
-////            //I gotta figure out how to get the time here
-//            intent.putExtra(MainActivity.TASK_DUE, dueDate.getText().toString());
-////            intent.putExtra("Comments", comments.getText().toString());
-////            //I gotta figure out how to get the photo here
-////            intent.putExtra("Photo", imgDecodableString.toString());
-//            intent.putExtra("Index", index);
-//            setResult(RESULT_OK, intent);
-//            finish();
-//            startActivityForResult(intent, 1);
-//            return true;
         }
 
         return super.onOptionsItemSelected(item);

@@ -23,40 +23,40 @@ public class Task implements Comparable<Task> {
     private String dueTime;
 
     @SerializedName("mod date")
-    private Date Date;
+    private Date modDate;
 
     @SerializedName("comments")
     private String comments;
 
     @SerializedName("categoryID")
-    private String categoryID;
+    private int categoryID;
 
 
-//    public Task(String taskName, String category, String dueDate, String dueTime, Date modDate, String comments) {
-//        this.taskName = taskName;
-//        this.category = category;
-//        this.dueDate = dueDate;
-//        this.dueTime = dueTime;
-//        this.Date = Date;
-//        this.comments = comments;
-//    }
 
-    public Task(String taskName, String dueDate, String dueTime, String categoryID, String comments) {
+    public Task(String taskName, String dueDate, String dueTime, Date modDate, String comments, String category, int categoryID) {
         this.taskName = taskName;
         this.category = category;
         this.dueTime = dueTime;
         this.dueDate = dueDate;
-        this.Date = new Date();
+        this.modDate = modDate;
         this.comments = comments;
         this.categoryID = categoryID;
 
     }
 
-    public String getCategoryID() {
+    public Date getModDate() {
+        return modDate;
+    }
+
+    public void setModDate(Date modDate) {
+        this.modDate = modDate;
+    }
+
+    public int getCategoryID() {
         return categoryID;
     }
 
-    public void setCategoryID(String categoryID) {
+    public void setCategoryID(int categoryID) {
         this.categoryID = categoryID;
     }
 
@@ -84,14 +84,6 @@ public class Task implements Comparable<Task> {
         this.dueDate = dueDate;
     }
 
-    public Date getDate() {
-        return Date;
-    }
-
-    public void setDate(Date modDate) {
-        this.Date = modDate;
-    }
-
 
     public String getDueTime() {
         return dueTime;
@@ -110,14 +102,10 @@ public class Task implements Comparable<Task> {
         this.comments = comments;
     }
 
-@Override
     public int compareTo(Task another) {
-    return another.getCategory().compareToIgnoreCase(getCategory());
+    return another.getDueDate().compareTo(getDueDate());
 
 
-//        return another.getDate().compareTo(getDate()); //puts new notes first
-//        return another.getDate().compareTo(another.getDate()); // my attempt
-//        return getDueDate().compareTo(another.getDueDate());    // Actual answer
     }
 }
 

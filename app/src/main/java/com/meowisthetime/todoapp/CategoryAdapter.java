@@ -5,10 +5,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -20,6 +22,7 @@ public class CategoryAdapter extends BaseAdapter {
     private ArrayList<Object> items;
     private LayoutInflater layoutInflater;
     private SimpleDateFormat formatter;
+    boolean[] checkBoxState;
 
 
     // Define ints to determine the type of view we want to create
@@ -29,8 +32,9 @@ public class CategoryAdapter extends BaseAdapter {
     // Construct our custom adapter
     public CategoryAdapter(Context context, ArrayList<Object> object) {
         this.items = object;
-        this.layoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        formatter = new SimpleDateFormat("MM/dd/yyyy h:mm a", Locale.getDefault());
+        this.layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        formatter = new SimpleDateFormat("MM/dd/yyyy \n h:mm a", Locale.getDefault());
+        checkBoxState = new boolean[items.size()];
     }
 
     // Get the number of views we will need to inflate. Should be the size of our items array
@@ -60,7 +64,7 @@ public class CategoryAdapter extends BaseAdapter {
     // Determine the type of view we will need to use for the position in our item array
     @Override
     public int getItemViewType(int position) {
-        if(getItem(position) instanceof Task) {
+        if (getItem(position) instanceof Task) {
             return TYPE_TASK;
         }
 
@@ -77,10 +81,10 @@ public class CategoryAdapter extends BaseAdapter {
     // Determine the type of view we are creating, then insert the necessary info from our
     // items array
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        int type = getItemViewType(position);
-        if(convertView == null) {
-            if(type == TYPE_TASK) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
+        final int type = getItemViewType(position);
+        if (convertView == null) {
+            if (type == TYPE_TASK) {
                 convertView = layoutInflater.inflate(R.layout.task_list_item, parent, false);
             } else if (type == TYPE_CATEGORY) {
                 convertView = layoutInflater.inflate(R.layout.category_list_item, parent, false);
@@ -88,21 +92,37 @@ public class CategoryAdapter extends BaseAdapter {
             }
         }
 
-        if(type == TYPE_TASK) {
+        if (type == TYPE_TASK) {
             Task task = (Task) getItem(position);
             TextView name = (TextView) convertView.findViewById(R.id.task_name);
-            TextView comments = (TextView) convertView.findViewById(R.id.commentBox);
             TextView date = (TextView) convertView.findViewById(R.id.date_due);
+            CheckBox checkbox = (CheckBox) convertView.findViewById(R.id.checkbox);
+            TextView modDate = (TextView) convertView.findViewById(R.id.date_mod);
             name.setText(task.getTaskName());
-//            comments.setText(task.getComments());
+            modDate.setText(formatter.format(task.getModDate()));
             date.setText(task.getDueDate());
-        } else if(type == TYPE_CATEGORY) {
+            checkbox.setChecked(checkBoxState[position]);
+
+
+            //for managing the state of the boolean
+            //array according to the state of the
+            //CheckBox
+
+            checkbox.setOnClickListener(new View.OnClickListener() {
+
+                public void onClick(View v) {
+                    if (((CheckBox) v).isChecked()) {
+                        checkBoxState[position] = true;
+                    } else {
+                        checkBoxState[position] = false;
+                    }
+                }
+            });
+                } else if (type == TYPE_CATEGORY) {
             String categoryName = (String) getItem(position);
             TextView category = (TextView) convertView.findViewById(R.id.category);
             category.setText(categoryName);
         }
         return convertView;
     }
-
-
 }
